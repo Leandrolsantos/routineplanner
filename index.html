@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Routine Planner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      text-shadow: 1.5px 1.5px 2px black;
+      width: 100%;
+    }
+
+    #todo-container {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+    }
+
+    #todo-container h2 {
+      margin-top: 0;
+    }
+
+    #todo-input {
+      width: calc(100% - 40px);
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #add-btn {
+      width: 100%;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #add-btn:hover {
+      background: #45a049;
+    }
+
+    .todo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .timer-container {
+      text-align: center;
+      margin: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .timer-container button {
+      margin: 5px;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .timer-container button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Routine Planner</h1>
+  </header>
+
+  <div id="todo-container">
+    <h2>To-Do List</h2>
+    <input type="text" id="todo-input" placeholder="Add a new task">
+    <button id="add-btn">Add Task</button>
+    <ul id="todo-list"></ul>
+  </div>
+
+  <div class="timer-container">
+    <h2>Pomodoro Timer</h2>
+    <p id="timer-display">25:00</p>
+    <button id="start-timer">Start</button>
+    <button id="pause-timer">Pause</button>
+    <button id="reset-timer">Reset</button>
+  </div>
+
+  <script>
+    // To-Do List Functionality
+    const addBtn = document.getElementById('add-btn');
+    const todoInput = document.getElementById('todo-input');
+    const todoList = document.getElementById('todo-list');
+
+    addBtn.addEventListener('click', () => {
+      const taskText = todoInput.value.trim();
+      if (taskText === '') return;
+
+      const listItem = document.createElement('li');
+      listItem.className = 'todo-item';
+      listItem.innerHTML = `${taskText} <button onclick="this.parentElement.remove()">Delete</button>`;
+
+      todoList.appendChild(listItem);
+      todoInput.value = '';
+    });
+
+    // Pomodoro Timer Functionality
+    let timerInterval;
+    let timeRemaining = 25 * 60; // 25 minutes in seconds
+    const timerDisplay = document.getElementById('timer-display');
+    const startBtn = document.getElementById('start-timer');
+    const pauseBtn = document.getElementById('pause-timer');
+    const resetBtn = document.getElementById('reset-timer');
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+      const seconds = (timeRemaining % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timeRemaining > 0) {
+          timeRemaining--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alert('Time is up! Take a break.');
+        }
+      }, 1000);
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    });
+
+    resetBtn.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timeRemaining = 25 * 60;
+      updateTimerDisplay();
+    });
+
+    updateTimerDisplay();
+  </script>
+</body>
+</html>
